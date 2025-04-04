@@ -1,5 +1,6 @@
 ﻿using DataAccess.DataContext;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,26 @@ namespace DataAccess.Repositories
 {
     public class PollRepository
     {
-        private readonly PollDbContext _context;
+        private PollDbContext myContext;
 
-        public PollRepository(PollDbContext context)
+        //Constructor Injection - Reference for me 
+        public PollRepository(PollDbContext _myContext)
         {
-            _context = context;
+            myContext = _myContext;
         }
+
+        public async Task AddPoll(Poll p)
+        {
+            p.DateCreated = DateTime.Now;
+            p.Option1VotesCount = 0;
+            p.Option2VotesCount = 0;
+            p.Option3VotesCount = 0;
+
+            myContext.Polls.Add(p);
+            await myContext.SaveChangesAsync();
+        }
+
+
 
         public async Task CreatePoll(string title, string option1Text, string option2Text, string option3Text)
         {
@@ -31,8 +46,15 @@ namespace DataAccess.Repositories
                 DateCreated = DateTime.UtcNow
             };
 
-            _context.Polls.Add(poll);
-            await _context.SaveChangesAsync();
+            myContext.Polls.Add(poll);
+            await myContext.SaveChangesAsync();
+        }
+
+        public async Task<List<Poll>> GetPolls()
+        {
+            return await myContext.Polls
+                .AsNoTracking() // optimization: no tracking needed for read-only data
+                .ToListAsync();
         }
     }
 }
