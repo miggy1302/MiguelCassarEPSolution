@@ -1,0 +1,41 @@
+﻿@model Domain.Models.Poll
+
+@{
+    ViewData["Title"] = "Vote on Poll";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">@Model.Title</h2>
+
+    <div class="row justify-content-center g-4">
+        @for (int i = 1; i <= 3; i++)
+        {
+            string optionText = i switch
+            {
+                1 => Model.Option1Text,
+                2 => Model.Option2Text,
+                3 => Model.Option3Text,
+                _ => ""
+            };
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-light h-100 shadow">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <h5 class="card-title">Option @i</h5>
+                        <p class="card-text">@optionText</p>
+
+                        <form asp-action="Vote" method="post" class="mt-auto">
+                            <input type="hidden" name="pollId" value="@Model.Id" />
+                            <input type="hidden" name="selectedOption" value="@i" />
+                            <button type="submit" class="btn btn-success w-100">Vote</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-action="List" class="btn btn-secondary">Back to Poll List</a>
+    </div>
+</div>

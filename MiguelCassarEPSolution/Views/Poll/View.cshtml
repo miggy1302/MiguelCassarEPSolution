@@ -1,0 +1,103 @@
+﻿@model Domain.Models.Poll
+
+@{
+    ViewData["Title"] = "Poll Details";
+}
+
+<!-- Chart.js & Datalabels Plugin -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <script>
+        const ctx = document.getElementById('pollPieChart').getContext('2d');
+        const totalVotes = @Model.Option1VotesCount + @Model.Option2VotesCount + @Model.Option3VotesCount;
+
+        const pollPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [
+                    '@Model.Option1Text',
+                    '@Model.Option2Text',
+                    '@Model.Option3Text'
+                ],
+                datasets: [{
+                    data: [
+        @Model.Option1VotesCount,
+        @Model.Option2VotesCount,
+        @Model.Option3VotesCount
+                            ],
+                    backgroundColor: [
+                        '#198754', // Green
+                        '#0dcaf0', // Blue
+                        '#ffc107'  // Yellow
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        formatter: (value, context) => {
+                            let percentage = ((value / totalVotes) * 100).toFixed(1);
+                            return percentage + '%';
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    </script>
+}
+
+<div class="container mt-5">
+    <div class="card bg-dark text-light shadow-lg">
+        <div class="card-header">
+            <h2 class="mb-0">@Model.Title</h2>
+            <small class="text-muted">Created on @Model.DateCreated.ToString("dd MMM yyyy")</small>
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title">Options & Votes</h5>
+            <ul class="list-group list-group-flush text-light">
+                <li class="list-group-item bg-dark d-flex justify-content-between align-items-center">
+                    <span><strong>Option 1:</strong> @Model.Option1Text</span>
+                    <span class="badge bg-success">@Model.Option1VotesCount votes</span>
+                </li>
+                <li class="list-group-item bg-dark d-flex justify-content-between align-items-center">
+                    <span><strong>Option 2:</strong> @Model.Option2Text</span>
+                    <span class="badge bg-info">@Model.Option2VotesCount votes</span>
+                </li>
+                <li class="list-group-item bg-dark d-flex justify-content-between align-items-center">
+                    <span><strong>Option 3:</strong> @Model.Option3Text</span>
+                    <span class="badge bg-warning">@Model.Option3VotesCount votes</span>
+                </li>
+            </ul>
+
+            <div class="mt-4 d-flex justify-content-center">
+                <div style="max-width: 300px; width: 100%;">
+                    <canvas id="pollPieChart"></canvas>
+                </div>
+            </div>
+
+
+
+            <div class="mt-4">
+                <p><strong>Poll ID:</strong> @Model.Id</p>
+                <p><strong>Total Votes:</strong> @(Model.Option1VotesCount + Model.Option2VotesCount + Model.Option3VotesCount)</p>
+            </div>
+
+            <div class="mt-3">
+                <a asp-action="List" class="btn btn-warning">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

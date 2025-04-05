@@ -49,9 +49,8 @@
                     <td>@Html.DisplayFor(modelItem => item.DateCreated)</td>
                     <td>
                         <div class="btn-group" role="group">
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-sm btn-warning" })
-                            @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-sm btn-info ms-1" })
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-sm btn-danger ms-1" })
+                            <a class="btn btn-sm btn-primary" asp-action="Vote" asp-route-id="@item.Id">Vote</a>
+                            <a class="btn btn-sm btn-primary" asp-action="View" asp-route-id="@item.Id">View</a>
                         </div>
                     </td>
                 </tr>

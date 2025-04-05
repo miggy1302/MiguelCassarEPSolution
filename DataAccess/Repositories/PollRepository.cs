@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
-    public class PollRepository
+    public class PollRepository : IPollRepository
     {
         private PollDbContext myContext;
 
@@ -17,6 +17,14 @@ namespace DataAccess.Repositories
         public PollRepository(PollDbContext _myContext)
         {
             myContext = _myContext;
+        }
+
+        public async Task<List<Poll>> GetPolls()
+        {
+            return await myContext.Polls
+                .AsNoTracking()
+                .OrderByDescending(p => p.DateCreated)
+                .ToListAsync();
         }
 
         public async Task AddPoll(Poll p)
@@ -30,31 +38,36 @@ namespace DataAccess.Repositories
             await myContext.SaveChangesAsync();
         }
 
-
-
-        public async Task CreatePoll(string title, string option1Text, string option2Text, string option3Text)
-        {
-            var poll = new Poll
-            {
-                Title = title,
-                Option1Text = option1Text,
-                Option2Text = option2Text,
-                Option3Text = option3Text,
-                Option1VotesCount = 0,
-                Option2VotesCount = 0,
-                Option3VotesCount = 0,
-                DateCreated = DateTime.UtcNow
-            };
-
-            myContext.Polls.Add(poll);
-            await myContext.SaveChangesAsync();
-        }
-
-        public async Task<List<Poll>> GetPolls()
+        public async Task<Poll?> GetPollByIdAsync(int id)
         {
             return await myContext.Polls
-                .AsNoTracking() // optimization: no tracking needed for read-only data
-                .ToListAsync();
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<bool> VoteAsync(int pollId, int optionNumber)
+        {
+            var poll = await myContext.Polls.FindAsync(pollId);
+            if (poll == null) return false;
+
+            switch (optionNumber)
+            {
+                case 1:
+                    poll.Option1VotesCount++;
+                    break;
+                case 2:
+                    poll.Option2VotesCount++;
+                    break;
+                case 3:
+                    poll.Option3VotesCount++;
+                    break;
+                default:
+                    return false;
+            }
+
+            await myContext.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

@@ -1,0 +1,13 @@
+[
+  {
+    "Id": 1,
+    "Title": "Testing Json",
+    "Option1Text": "Test 1",
+    "Option2Text": "Test 2",
+    "Option3Text": "Test 3",
+    "Option1VotesCount": 0,
+    "Option2VotesCount": 0,
+    "Option3VotesCount": 1,
+    "DateCreated": "2025-04-05T20:10:56.0071505+02:00"
+  }
+]

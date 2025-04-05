@@ -21,7 +21,8 @@ namespace MiguelCassarEPSolution
                 .AddEntityFrameworkStores<PollDbContext>();
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddScoped<PollRepository>();
+            builder.Services.AddScoped<IPollRepository, PollRepository>();
+            //builder.Services.AddScoped<IPollRepository, PollFileRepository>();
 
             var app = builder.Build();
 
