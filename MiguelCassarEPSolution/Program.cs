@@ -29,7 +29,7 @@ namespace MiguelCassarEPSolution
                 .AddEntityFrameworkStores<PollDbContext>();
 
             builder.Services.AddScoped<IPollRepository, PollRepository>();
-            builder.Services.AddScoped<IPollRepository, PollFileRepository>();
+            //builder.Services.AddScoped<IPollRepository, PollFileRepository>();
             builder.Services.AddScoped<VoteLogRepository>();
             builder.Services.AddScoped<OneVotePerUserFilter>();
 
