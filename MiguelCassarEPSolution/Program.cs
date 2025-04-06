@@ -50,7 +50,7 @@ namespace MiguelCassarEPSolution
                 app.UseForwardedHeaders(new ForwardedHeadersOptions
                 {
                     ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor,
-                    KnownProxies = { IPAddress.Parse("locahost") }
+                    KnownProxies = { IPAddress.Parse("127.0.0.1") }
                 });
 
                 app.UseExceptionHandler("/Home/Error");
