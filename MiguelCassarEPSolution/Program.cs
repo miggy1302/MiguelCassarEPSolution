@@ -33,6 +33,11 @@ namespace MiguelCassarEPSolution
 
             builder.Services.AddScoped<OneVotePerUserFilter>();
 
+            builder.WebHost.ConfigureKestrel(serverOptions =>
+            {
+                serverOptions.ListenAnyIP(5000);
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -47,7 +52,7 @@ namespace MiguelCassarEPSolution
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
