@@ -27,6 +27,7 @@ namespace Presentation.Controllers
             return View(polls);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Vote([FromServices] IPollRepository _myRepo, int id)
         {
@@ -66,7 +67,7 @@ namespace Presentation.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet]
         public IActionResult Create([FromServices] IPollRepository _myRepo)
         {
