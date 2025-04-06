@@ -26,7 +26,6 @@ namespace DataAccess.Repositories
         public async Task LogVoteAsync(string userId, int pollId)
         {
             var vote = new VoteLog { UserId = userId, PollId = pollId};
-            vote.VotedAt = DateTime.UtcNow;
             _myContext.VoteLogs.Add(vote);
             await _myContext.SaveChangesAsync();
         }

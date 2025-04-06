@@ -22,6 +22,6 @@ namespace Domain.Models
         [Required]
         public int PollId { get; set; }
 
-        public DateTime VotedAt { get; set; }
+        public DateTime VotedAt { get; set; } = DateTime.UtcNow;
     }
 }

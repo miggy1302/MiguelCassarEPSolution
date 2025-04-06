@@ -29,7 +29,6 @@ namespace DataAccess.Repositories
 
         public async Task AddPoll(Poll p)
         {
-            p.DateCreated = DateTime.Now;
             p.Option1VotesCount = 0;
             p.Option2VotesCount = 0;
             p.Option3VotesCount = 0;
