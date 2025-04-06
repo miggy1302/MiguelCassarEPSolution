@@ -59,6 +59,22 @@ namespace MiguelCassarEPSolution
             }
 
             app.UseStaticFiles();
+
+            app.Use(async (context, next) =>
+            {
+                var path = context.Request.Path.Value;
+
+                // Normalize redundant slashes
+                if (!string.IsNullOrEmpty(path) && path.Contains("//"))
+                {
+                    var normalized = System.Text.RegularExpressions.Regex.Replace(path, "/{2,}", "/");
+                    context.Response.Redirect(normalized + context.Request.QueryString, true);
+                    return;
+                }
+
+                await next();
+            });
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
