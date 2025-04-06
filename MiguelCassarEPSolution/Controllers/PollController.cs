@@ -1,12 +1,24 @@
 ﻿using DataAccess.Repositories;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.EntityFrameworkCore;
+using Presentation.ActionFilter;
 
 namespace Presentation.Controllers
 {
     public class PollController : Controller
     {
+
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public PollController(UserManager<IdentityUser> userManager)
+        {
+            _userManager = userManager;
+        }
+
         //Method Incejtion here
         [HttpGet]
         public async Task<IActionResult> List([FromServices] IPollRepository _myRepo)
@@ -28,9 +40,12 @@ namespace Presentation.Controllers
             return View(poll);
         }
 
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Vote(int pollId, int selectedOption, [FromServices] IPollRepository _myRepo)
+        [ServiceFilter(typeof(OneVotePerUserFilter))]
+        public async Task<IActionResult> Vote(int pollId, int selectedOption, [FromServices] IPollRepository _myRepo, [FromServices] VoteLogRepository _voteRepo, VoteLog v)
         {
+            var userId = _userManager.GetUserId(User);
             if (selectedOption < 1 || selectedOption > 3)
             {
                 TempData["error"] = "Invalid option selected.";
@@ -44,6 +59,8 @@ namespace Presentation.Controllers
                 return RedirectToAction("List");
             }
 
+            await _voteRepo.LogVoteAsync(userId, pollId);
+
             TempData["message"] = "Vote submitted successfully!";
             return RedirectToAction("List");
         }
@@ -55,6 +72,8 @@ namespace Presentation.Controllers
         {
             return View();
         }
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromServices] IPollRepository _myRepo, Poll p)
         {

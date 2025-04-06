@@ -15,5 +15,7 @@ namespace DataAccess.DataContext
         public PollDbContext(DbContextOptions<PollDbContext> options) : base(options) { }
 
         public DbSet<Poll> Polls { get; set; }
+        public DbSet<VoteLog> VoteLogs { get; set; }
+
     }
 }

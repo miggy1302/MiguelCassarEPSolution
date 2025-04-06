@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DataAccess.DataContext;
 using DataAccess.Repositories;
+using Presentation.ActionFilter;
 
 namespace MiguelCassarEPSolution
 {
@@ -12,9 +13,13 @@ namespace MiguelCassarEPSolution
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            //builder.Services.AddDbContext<PollDbContext>(options =>
+            //    options.UseSqlServer(connectionString));
+
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<PollDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseNpgsql(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -23,6 +28,10 @@ namespace MiguelCassarEPSolution
 
             builder.Services.AddScoped<IPollRepository, PollRepository>();
             //builder.Services.AddScoped<IPollRepository, PollFileRepository>();
+
+            builder.Services.AddScoped<VoteLogRepository>();
+
+            builder.Services.AddScoped<OneVotePerUserFilter>();
 
             var app = builder.Build();
 
